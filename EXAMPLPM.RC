@@ -1,0 +1,259 @@
+/*    File:   examplpm.rc
+
+      Description: Resource definition file for OS|2 Presentation Manager
+                application ExamplPM.  Formatted for use with Presentation
+                Manager prototype code generator WINPRO/PM.
+
+      WINPRO/PM, a product of Louis J. Cutrona, Jr.
+      Xian Corporation
+      625 North Monroe Street
+      Ridgewood, NJ 07450-1206
+      (201) 447-3270
+
+*/
+
+#include <os2.h>
+
+/* Note: The file "examrc.h" will be created by WINPRO/PM, but you must    
+ remember to include the corresponding statement in your resource (.RC)    
+ file.  Its name is constructed by prefixing the first four letters of your
+ application name to the name "rc.h".  Thus, because this application's    
+ name is "examplpm", the resulting name is "examrc.h".  If your application
+ is called "myprog", the resulting name will be "myprrc.h".  If your       
+ application is called "foo", the name you must use here will be "foorc.h" 
+*/
+
+#include "examrc.h"     
+
+/* Note: You will have to provide your own icon or use an existing one */
+
+POINTER IDS_NAME examplpm.ico
+
+STRINGTABLE
+{
+   IDS_NAME,     "ExamplPM"
+   IDS_ABOUT,    "About..."
+   IDS_TITLE,    "WINPRO/PM Example"
+}
+
+MENU    IDS_NAME
+{
+   SUBMENU "~File", midFILE, MIS_TEXT|MIS_SUBMENU
+   {
+      MENUITEM "~New", midFILENEW, MIS_TEXT
+      MENUITEM "~Open...", midFILEOPEN, MIS_TEXT
+      MENUITEM "~Save", midFILESAVE, MIS_TEXT
+      MENUITEM SEPARATOR
+      MENUITEM "A~bout ExamplPM...", ABOUT, MIS_TEXT
+   }
+   SUBMENU "~Edit", midEDIT, MIS_TEXT|MIS_SUBMENU
+   {
+      MENUITEM "~Restore Image\tSh Esc", midEDITRESTORE
+      MENUITEM "Cu~t Image\tDel", midEDITCUT, MIS_TEXT 
+      MENUITEM "~Copy Image\tF2", midEDITCOPY, MIS_TEXT
+      MENUITEM "~Paste Image\tIns", midEDITPASTE       
+      MENUITEM "C~lear", midEDITCLEAR, MIS_TEXT        
+   }
+   SUBMENU "~Create", midCREATE, MIS_TEXT|MIS_SUBMENU
+   {
+      MENUITEM "~Scan...", midCREATESCAN, MIS_TEXT
+      MENUITEM "~Process...", midCREATEPROCESS, MIS_TEXT
+   }
+   SUBMENU "E~xit", midQUERYEXIT, MIS_TEXT|MIS_SUBMENU
+   {
+      MENUITEM "E~xit WINPRO/PM example...  F3", MID_EXIT, MIS_TEXT
+      MENUITEM "~Resume WINPRO/PM example", -1, MIS_TEXT
+   }
+   MENUITEM "F1=Help", midHELP, MIS_HELP | MIS_BUTTONSEPARATOR
+}
+
+/* Note that MENUITEM midHELP has the MIS_HELP style attribute so that   
+ when it is selected, it will cause a WM_HELP message rather than a    
+ WM_COMMAND message.  Similarly, because ACCELTABLE item midHELP has   
+ the HELP acceloption, it, too will cause a WM_HELP message rather than
+ a WM_COMMAND message.                                                 
+
+ WINPRO/PM recognizes the special identifier MID_EXIT as the application
+ terminator and will generate code to end the application when the menu
+ item with the identifier MID_EXIT is selected.
+*/
+
+ACCELTABLE      IDS_NAME
+BEGIN
+   VK_F1,     midHELP,            VIRTUALKEY,  HELP
+   VK_F2,     midEDITCOPY,        VIRTUALKEY
+   VK_F3,     MID_EXIT,           VIRTUALKEY
+   VK_F10,    accelF10,           VIRTUALKEY
+   VK_DELETE, midEDITCUT,         VIRTUALKEY
+   VK_ESC,    midEDITRESTORE,     VIRTUALKEY,  SHIFT
+   VK_INSERT, midEDITPASTE,       VIRTUALKEY
+END
+
+/* The identifier accelF10 does not correspond to any menu item, so a     */
+/* separate function will be set up to be invoked whenever its key is     */
+/* pressed.                                                               */
+
+/* WINPRO/PM requires the name of the "About..." dialog box to be "ABOUT" */
+
+DLGTEMPLATE ABOUT
+{
+   DIALOG "", 0, 22, 17, 171, 82, WS_SAVEBITS | FS_DLGBORDER
+   {
+      CTEXT "Xian Corporation",                   -1, 49, 68, 83,  9
+      ICON  IDS_NAME,                       IDS_NAME,  7, 36,  0,  0
+      CTEXT "WINPRO/PM Example",                  -1, 38, 55, 98,  8
+      CTEXT "Version 1.00",                       -1, 57, 42, 65,  8
+      CTEXT "Copyright ¸ 1988, L. J. Cutrona",    -1, 14, 22,147,  9
+      DEFPUSHBUTTON "Ok",                     DID_OK, 69,  5, 38, 12, WS_GROUP
+   }
+}
+
+/* Where the identifier assigned to the dialog box definition is the same 
+ as the identifier assigned to a menuitem, WINPRO/PM will automatically 
+ generate the code to activate the dialog box whenever the corresponding
+ menu item is selected.  Thus, the dialog box definition below labeled  
+ "midFILEOPEN" will be activated whenever the user selects the item     
+ "Open..." from the pull-down menu under "File" because the identifier  
+ assigned to "Open..." is also "midFILEOPEN"                            
+*/
+
+DLGTEMPLATE midFILEOPEN
+{
+   DIALOG "", 0, 51, 33, 196, 148, FS_NOBYTEALIGN | FS_DLGBORDER | 
+                FS_SCREENALIGN | WS_CLIPSIBLINGS | WS_SAVEBITS
+   {
+      /* There's no such keyword as CTEXT, according to QuickHelp v1.06, */
+      /* but the following continues to work anyway!                     */
+      CTEXT "Open File"              -1,            67, 139, 56,  8
+      LTEXT "Use mouse to choose file, or type filename." -1, 6, 129, 187, 8
+      RTEXT "Current Directory :"    -1,             3, 115, 78,  8
+      LTEXT ""                       IDD_PATH,      88, 115, 97,  8
+      RTEXT "Filename :"             -1,            11, 100, 71,  8
+
+/*      CONTROL "*.img", IDD_FILEEDIT, 88, 100, 96, 8, WC_ENTRYFIELD,       */
+/*            ES_LEFT | ES_AUTOSCROLL | ES_MARGIN | WS_TABSTOP | WS_VISIBLE */
+
+/* The following control definition is equivalent to the one commented out  */
+
+      ENTRYFIELD "*.img"             IDD_FILEEDIT, 88, 100, 96, 8,
+        ES_MARGIN | ES_AUTOSCROLL | WS_VISIBLE
+        
+      CTEXT "Directories"            DID_FIXEDTEXT, 10,  89, 70,  8
+      CTEXT "Files"                  DID_FIXEDTEXT,107,  89, 70,  8 
+      LISTBOX                        IDD_DIRLIST,    6,  22, 82, 64
+      LISTBOX                        IDD_FILELIST, 102,  22, 82, 64
+      DEFPUSHBUTTON "Open"           DID_OK,        33,   4, 48, 12, WS_GROUP
+      PUSHBUTTON "Cancel"            DID_CANCEL,   108,   4, 48, 12, WS_GROUP
+   }
+}
+
+/* Note the use of numeric (-1) dialog control identifiers in several lines 
+ of the above dialog definition.  When the dialog procedure for this dialog 
+ box is set up by WINPRO/PM, it will not set up the code to expect messages 
+ from these four controls.  In any case, messages are not expected from     
+ these four controls because they are fixed text.  Alternatively, the same  
+ effect will result from the use of the predefined WINPRO/PM identifier     
+ DID_FIXEDTEXT that is used in the fourth from last line of the above       
+ definition.  Use of DID_FIXEDTEXT or the number -1 is preferred over the   
+ use of arbitrary numbers because of the chance that WINPRO/PM will assign  
+ the same number to the symbol of an active control in the same dialog box. 
+*/
+
+
+DLGTEMPLATE midCREATEPROCESS LOADONCALL MOVEABLE DISCARDABLE 
+BEGIN
+    DIALOG "", midCREATEPROCESS, 12, 52, 299, 153, FS_NOBYTEALIGN | 
+                FS_DLGBORDER | WS_CLIPSIBLINGS | WS_SAVEBITS
+    BEGIN
+        CONTROL "File to Process", -1, 158, 121, 132, 29, WC_STATIC, 
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "TEMP.SIF", GP_SIFNAME, 170, 126, 106, 12, WC_ENTRYFIELD, 
+                ES_LEFT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Area to Process", -1, 7, 88, 137, 62, WC_STATIC, SS_GROUPBOX | 
+                WS_GROUP | WS_VISIBLE
+        CONTROL "Offset from Left Edge", -1, 13, 129, 93, 8, WC_STATIC, 
+                SS_TEXT | DT_LEFT | DT_TOP | WS_VISIBLE
+        CONTROL "0.00", GP_LOFFSET, 117, 127, 21, 12, WC_ENTRYFIELD, ES_LEFT | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Offset from Top Edge", -1, 13, 117, 93, 8, WC_STATIC, 
+                SS_TEXT | DT_LEFT | DT_TOP | WS_VISIBLE
+        CONTROL "0.00", GP_TOFFSET, 117, 115, 21, 12, WC_ENTRYFIELD, ES_LEFT | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Width", -1, 13, 105, 93, 8, WC_STATIC, SS_TEXT | DT_LEFT | 
+                DT_TOP | WS_VISIBLE
+        CONTROL "0.00", GP_WIDTH, 117, 103, 21, 12, WC_ENTRYFIELD, ES_LEFT | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Height", -1, 13, 93, 93, 8, WC_STATIC, SS_TEXT | DT_LEFT | 
+                DT_TOP | WS_VISIBLE
+        CONTROL "0.00", GP_HEIGHT, 117, 91, 20, 12, WC_ENTRYFIELD, ES_LEFT | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Scale Factor", -1, 7, 28, 91, 53, WC_STATIC, SS_GROUPBOX | 
+                WS_GROUP | WS_VISIBLE
+        CONTROL "Horizontal", -1, 13, 57, 44, 8, WC_STATIC, SS_TEXT | DT_LEFT | 
+                DT_TOP | WS_VISIBLE
+        CONTROL "1.00", GP_HSCALE, 64, 57, 21, 12, WC_ENTRYFIELD, ES_LEFT | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Vertical", -1, 14, 39, 41, 8, WC_STATIC, SS_TEXT | DT_LEFT | 
+                DT_TOP | WS_VISIBLE
+        CONTROL "1.00", GP_VSCALE, 64, 37, 21, 11, WC_ENTRYFIELD, ES_LEFT | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Process", -1, 191, 30, 99, 78, WC_STATIC, SS_GROUPBOX | 
+                WS_GROUP | WS_VISIBLE
+        CONTROL "", GP_FORSCREEN, 205, 83, 9, 12, WC_BUTTON, BS_AUTORADIOBUTTON | 
+                WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "", GP_FORPRINTER, 205, 61, 9, 12, WC_BUTTON, BS_AUTORADIOBUTTON | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "", GP_PRINT, 205, 38, 10, 12, WC_BUTTON, BS_AUTORADIOBUTTON | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "To Clipboard for Printer", -1, 222, 58, 57, 17, WC_STATIC, 
+                SS_TEXT | DT_LEFT | DT_TOP | DT_WORDBREAK | WS_GROUP | 
+                WS_VISIBLE
+        CONTROL "To Clipboard for Screen", -1, 222, 79, 57, 18, WC_STATIC, 
+                SS_TEXT | DT_LEFT | DT_TOP | DT_WORDBREAK | WS_VISIBLE
+        CONTROL "Directly to Printer", -1, 222, 35, 44, 18, WC_STATIC, 
+                SS_TEXT | DT_LEFT | DT_TOP | DT_WORDBREAK | WS_VISIBLE
+        CONTROL "Favor", -1, 111, 29, 60, 45, WC_STATIC, SS_GROUPBOX | 
+                WS_GROUP | WS_VISIBLE
+/*  
+*       CONTROL "White", GP_FAVORWHITE, 123, 53, 41, 9, WC_BUTTON, BS_AUTOCHECKBOX | 
+*               WS_GROUP | WS_TABSTOP | WS_VISIBLE
+*/
+        /* There's no such keyword as AUTOCHECKBOX, according to QuickHelp v1.06 */
+        /* The above should, therefore, be used, but the following works anyway! */
+
+        AUTOCHECKBOX "White", GP_FAVORWHITE, 123, 53, 41, 9, 
+                WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Black", GP_FAVORBLACK, 123, 36, 38, 10, WC_BUTTON, BS_AUTO3STATE | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Process", DID_OK, 43, 7, 52, 12, WC_BUTTON, BS_PUSHBUTTON | 
+                BS_DEFAULT | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Defaults", GP_DEFAULTS, 121, 7, 52, 12, WC_BUTTON, BS_PUSHBUTTON | 
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel", DID_CANCEL, 197, 7, 52, 12, WC_BUTTON, BS_PUSHBUTTON | 
+                WS_TABSTOP | WS_VISIBLE
+    END
+END
+
+/* Note that the identifier for the following dialog box definition      
+ (PRINTERABORT_DIALOG) does not correspond to an identifier in the       
+ application menu defined at the beginning of this file.                 
+ In this case, WINPRO/PM will declare and create a dialog procedures for 
+ the dialog box, and include it in the application prototype code, but it
+ will not be automatically activated.  The application developer will    
+ have to modify the prototype code to have it activated at the           
+ appropriate point
+*/
+
+
+DLGTEMPLATE PRINTERABORT
+{
+    DIALOG "", 0, 20, 20, 157, 27, FS_DLGBORDER | WS_VISIBLE
+    {
+        DEFPUSHBUTTON "Cancel", DID_CANCEL, 55, 2, 37, 12
+        CTEXT "Select Cancel to cancel printing", -1, 10, 17, 139, 8, WS_GROUP
+    }
+}
+
+
+/*   E N D   O F   E X A M P L P M . R C   */
+

@@ -1,0 +1,26 @@
+;-------------------------------------------
+; ExamplPM.def - module definition file
+;-------------------------------------------
+
+NAME            ExamplPM
+DESCRIPTION     'ExamplPM'
+PROTMODE
+HEAPSIZE        1024
+STACKSIZE       8192
+
+CODE            MOVEABLE
+DATA            MOVEABLE MULTIPLE
+
+SEGMENTS
+                _TEXT		PRELOAD	MOVEABLE
+                _APPINIT 	PRELOAD MOVEABLE DISCARDABLE
+                _APPDLGS		MOVEABLE DISCARDABLE
+
+EXPORTS
+                ExamplPMWndProc                      @1
+                ABOUTDlgWndProc                   @2
+                midFILEOPENDlgWndProc             @3
+                midCREATEPROCESSDlgWndProc        @4
+                PRINTERABORTDlgWndProc            @5
+
+
